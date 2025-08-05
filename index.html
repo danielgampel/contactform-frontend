@@ -3,59 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
+    <title>Modern Contact Form</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
-        .form-container { width: 300px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input, button { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; }
+        /* Custom styles to apply the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide the default spinner on number inputs for a cleaner look */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
-<body>
-    <div class="form-container">
-        <h3>Contact Us</h3>
-        <form id="contactForm">
-            <input type="text" id="name" placeholder="Name" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="tel" id="phone" placeholder="Phone Number" required>
-            <button type="submit">Submit</button>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen">
+
+    <div id="form-container" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <!-- Form Header -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Contact Us</h1>
+
+        <!-- The Form -->
+        <form id="contactForm" novalidate>
+            <!-- Name Input -->
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+                <input type="text" id="name" name="name" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+            </div>
+
+            <!-- Email Input with Validation Icon -->
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-600 mb-1">Email Address</label>
+                <div class="relative">
+                    <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    <div id="email-icon" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <!-- SVG icons for validation will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                <p id="email-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid email address.</p>
+            </div>
+
+            <!-- Phone Input with Validation Icon -->
+            <div class="mb-4">
+                <label for="phone" class="block text-sm font-medium text-gray-600 mb-1">Phone Number</label>
+                <div class="relative">
+                    <input type="tel" id="phone" name="phone" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                     <div id="phone-icon" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <!-- SVG icons for validation will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                 <p id="phone-error" class="text-red-500 text-xs mt-1 hidden">Please enter a valid phone number.</p>
+            </div>
+            
+            <!-- Message Textarea -->
+            <div class="mb-6">
+                <label for="message" class="block text-sm font-medium text-gray-600 mb-1">Message</label>
+                <textarea id="message" name="message" rows="4" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submit-button" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-400 transition-colors flex items-center justify-center">
+                <span id="button-text">Send Message</span>
+                <!-- Spinner Icon (hidden by default) -->
+                <svg id="spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
         </form>
-        <p id="responseMessage"></p>
     </div>
+    
+    <!-- Success Message Container (hidden by default) -->
+    <div id="success-message" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-lg w-full max-w-md hidden">
+        <div class="flex">
+            <div class="py-1">
+                <svg class="h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+                <p class="font-bold">Thank you!</p>
+                <p class="text-sm">Your message has been sent successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message Container (hidden by default) -->
+    <div id="error-message" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-lg w-full max-w-md hidden">
+        <div class="flex">
+            <div class="py-1">
+                <svg class="h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+                <p class="font-bold">Submission Failed</p>
+                <p class="text-sm">An error occurred. Please try again later.</p>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        document.getElementById('contactForm').addEventListener('submit', async function(event) {
-            // This stops the browser from its default behavior of reloading the page on form submission.
-            // We want to handle it ourselves with JavaScript.
-            event.preventDefault();
+        // --- DOM Element References ---
+        const contactForm = document.getElementById('contactForm');
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const spinner = document.getElementById('spinner');
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const responseMessage = document.getElementById('responseMessage');
+        const emailInput = document.getElementById('email');
+        const emailIcon = document.getElementById('email-icon');
+        const emailError = document.getElementById('email-error');
 
-            // This is the URL of your Backend App Service (the "kitchen")
-            // IMPORTANT: Replace this with the actual URL of your logic layer App Service
-            const apiUrl = 'https://contact-form-api-logiclayer-fsgdbnbueqgsedf0.centralus-01.azurewebsites.net/api/contacts';
+        const phoneInput = document.getElementById('phone');
+        const phoneIcon = document.getElementById('phone-icon');
+        const phoneError = document.getElementById('phone-error');
+        
+        const formContainer = document.getElementById('form-container');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
 
-            try {
-                // 'fetch' sends the data to our backend API. We use 'await' because this network
-                // request takes time, and we need to wait for the response.
-                const response = await fetch(apiUrl, {
-                    method: 'POST', // We are sending (POSTing) data.
-                    headers: { 'Content-Type': 'application/json' }, // We're telling the server the data is in JSON format.
-                    body: JSON.stringify({ name, email, phone }) // We convert our JavaScript object to a JSON string.
-                });
+        // --- SVG Icons ---
+        const checkIconSVG = `<svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>`;
+        const errorIconSVG = `<svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`;
 
-                if (response.ok) {
-                    responseMessage.textContent = 'Thank you for your submission!';
-                    document.getElementById('contactForm').reset();
-                } else {
-                    responseMessage.textContent = 'An error occurred. Please try again.';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                responseMessage.textContent = 'An error occurred. Please try again.';
+        // --- Validation Functions ---
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailRegex.test(emailInput.value)) {
+                emailIcon.innerHTML = checkIconSVG;
+                emailError.classList.add('hidden');
+                return true;
+            } else {
+                emailIcon.innerHTML = errorIconSVG;
+                emailError.classList.remove('hidden');
+                return false;
+            }
+        }
+
+        function validatePhone() {
+            // A simple check for at least 7 digits
+            const phoneRegex = /^\d{7,}$/;
+            if (phoneRegex.test(phoneInput.value.replace(/\D/g, ''))) {
+                phoneIcon.innerHTML = checkIconSVG;
+                phoneError.classList.add('hidden');
+                return true;
+            } else {
+                phoneIcon.innerHTML = errorIconSVG;
+                phoneError.classList.remove('hidden');
+                return false;
+            }
+        }
+
+        // --- Event Listeners for Real-Time Validation ---
+        emailInput.addEventListener('input', () => {
+            // Only show icon after user starts typing
+            if (emailInput.value.length > 0) {
+                validateEmail();
+            } else {
+                emailIcon.innerHTML = '';
+                emailError.classList.add('hidden');
             }
         });
+
+        phoneInput.addEventListener('input', () => {
+             // Only show icon after user starts typing
+            if (phoneInput.value.length > 0) {
+                validatePhone();
+            } else {
+                phoneIcon.innerHTML = '';
+                phoneError.classList.add('hidden');
+            }
+        });
+
+        // --- Form Submission Handler ---
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Final validation check before submitting
+            const isEmailValid = validateEmail();
+            const isPhoneValid = validatePhone();
+
+            if (!isEmailValid || !isPhoneValid) {
+                // If validation fails, don't submit
+                return;
+            }
+
+            // --- UI Feedback for Submission State ---
+            submitButton.disabled = true;
+            buttonText.textContent = 'Submitting...';
+            spinner.classList.remove('hidden');
+
+            // --- Simulate API Call ---
+            // In a real application, you would replace this with a `fetch` call to your backend API.
+            // For example: fetch('/api/contact', { method: 'POST', body: new FormData(contactForm) })
+            setTimeout(() => {
+                const isSuccess = Math.random() > 0.2; // Simulate a random success/failure
+
+                // Hide the form
+                formContainer.classList.add('hidden');
+
+                if (isSuccess) {
+                    // Show success message
+                    successMessage.classList.remove('hidden');
+                } else {
+                    // Show error message
+                    errorMessage.classList.remove('hidden');
+                }
+
+                // --- Reset UI (optional, for demonstration) ---
+                // You might want to redirect the user or just leave the message displayed.
+                // For this demo, we'll reset after a few seconds to allow another submission.
+                setTimeout(() => {
+                    formContainer.classList.remove('hidden');
+                    successMessage.classList.add('hidden');
+                    errorMessage.classList.add('hidden');
+                    
+                    submitButton.disabled = false;
+                    buttonText.textContent = 'Send Message';
+                    spinner.classList.add('hidden');
+                    contactForm.reset();
+                    emailIcon.innerHTML = '';
+                    phoneIcon.innerHTML = '';
+                }, 4000);
+
+            }, 2000); // Simulate 2-second network delay
+        });
     </script>
+
 </body>
 </html>
